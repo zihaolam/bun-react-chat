@@ -1,0 +1,42 @@
+{
+    "name": "bun-react-chat",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev:frontend": "vite frontend",
+        "dev:backend": "bun run backend/src/index.ts --hot",
+        "dev": "bun dev:backend & bun dev:frontend",
+        "build:frontend": "tsc -b && vite build",
+        "lint": "eslint .",
+        "db:migrate": "bun run backend/src/db/migrate.ts",
+        "preview:frontend": "vite preview"
+    },
+    "dependencies": {
+        "@hookform/resolvers": "^3.9.1",
+        "@tanstack/react-query": "^5.61.0",
+        "bun": "^1.1.36",
+        "react": "^18.3.1",
+        "react-aria-components": "^1.5.0",
+        "react-dom": "^18.3.1",
+        "react-hook-form": "^7.53.2",
+        "tailwindcss-react-aria-components": "^1.2.0",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.13.0",
+        "@types/react": "^18.3.12",
+        "@types/react-dom": "^18.3.1",
+        "@vitejs/plugin-react-swc": "^3.5.0",
+        "autoprefixer": "^10.4.20",
+        "eslint": "^9.13.0",
+        "eslint-plugin-react-hooks": "^5.0.0",
+        "eslint-plugin-react-refresh": "^0.4.14",
+        "globals": "^15.11.0",
+        "postcss": "^8.4.49",
+        "tailwindcss": "^3.4.15",
+        "typescript": "~5.6.2",
+        "typescript-eslint": "^8.11.0",
+        "vite": "^5.4.10"
+    }
+}
