@@ -1,7 +1,7 @@
 import type { AuthenticatedRequestContext, RequestContext } from '@backend/lib/context'
 import { repos } from '@backend/repos'
 import { UserValidators } from '@shared/validators'
-import { parseFormBody } from '@backend/lib/parser'
+import { parseFormBody, parseParams } from '@backend/lib/parser'
 import { HTTPResponse } from '@backend/lib/response'
 
 export const handleGetSession = (ctx: AuthenticatedRequestContext) => {
@@ -42,4 +42,21 @@ export const handleLogout = () => {
 export const handleGetUsers = (ctx: RequestContext) => {
     const users = repos.user.getUsers(ctx.db)
     return new HTTPResponse(users)
+}
+
+export const handleGetUser = (ctx: RequestContext) => {
+    const [data, err] = parseParams(ctx.req)
+    if (err) {
+        return new HTTPResponse(null, err, 400)
+    }
+
+    const validated = UserValidators.getUserValidator.safeParse(data)
+
+    if (!validated.success) {
+        return new HTTPResponse(null, validated.error.flatten().formErrors, 400)
+    }
+
+    const user = repos.user.getUser(ctx.db, validated.data.userId)
+    console.info({ user })
+    return new HTTPResponse(user)
 }

@@ -1,20 +1,28 @@
 import { Suspense } from 'react'
 import { Typewriter } from '@frontend/components/typewriter'
 import { ConversationList } from './conversation-list'
-import { NewConversationButton } from './new-conversation'
-import { NewConversationButtonWithDialog } from './new-conversation'
-import { Button } from 'react-aria-components'
-import { useLogout, useSession } from '@frontend/queries/user'
+import { useSession } from '@frontend/queries/user'
+import { useRouterState } from '@tanstack/react-router'
+import { UserSearch, UserSearchInput } from './user-search'
+import { LogoutButton } from '../logout-button'
 
 export const Conversation = () => {
-    const { mutate, isPending } = useLogout()
     const { data: session } = useSession()
+    const router = useRouterState()
+
     return (
-        <div className="sm:w-[250px] duration-200 w-[80vw] border-r h-screen flex flex-col">
+        <div
+            // hide conversation list when in mobile because the homepage is esssentially the conversation list
+            className="sm:w-[250px] data-[hide=true]:hidden bg-white duration-200 w-screen border-r h-screen sm:data-[hide=true]:flex sm:data-[hide=false]:flex flex-col"
+            data-hide={router.location.pathname.includes('/chat')}
+        >
             <div className="flex items-center justify-between px-2 h-8 border-b">
-                <h1 className="text-sm font-semibold">username: {session.username}</h1>
-                <Suspense fallback={<NewConversationButton className="bg-black/80" isDisabled />}>
-                    <NewConversationButtonWithDialog />
+                <h1 className="text-sm font-semibold">username: {session?.username}</h1>
+                <LogoutButton className="sm:block" />
+            </div>
+            <div className="shrink-0">
+                <Suspense fallback={<UserSearchInput isLoading />}>
+                    <UserSearch />
                 </Suspense>
             </div>
             <div className="max-h-full overflow-y-auto h-full flex-1">
@@ -27,17 +35,6 @@ export const Conversation = () => {
                 >
                     <ConversationList />
                 </Suspense>
-            </div>
-            <div className="p-2">
-                <Button
-                    className={({ isDisabled }) =>
-                        `border rounded w-full py-1.5 font-medium text-sm ${isDisabled ? 'bg-gray-100' : 'bg-white'}`
-                    }
-                    isDisabled={isPending}
-                    onPress={() => mutate()}
-                >
-                    Logout
-                </Button>
             </div>
         </div>
     )

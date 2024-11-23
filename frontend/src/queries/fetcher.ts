@@ -1,4 +1,5 @@
 import type { SUPPORTED_HTTP_METHODS, Routes } from '@backend/types'
+import { clientEnv } from '@shared/env/client'
 
 interface FetcherOptions {
     filters?: unknown
@@ -10,7 +11,7 @@ export const fetcher = async <Method extends SUPPORTED_HTTP_METHODS>(
     opts?: FetcherOptions
 ) => {
     const { filters, body } = opts ?? {}
-    let _url: string = '/' + (url as string)
+    let _url: string = `http://${clientEnv.VITE_BACKEND_HOST}:5173` + (url as string)
     if (filters) {
         const urlWithFilters = new URLSearchParams()
         urlWithFilters.set('filters', JSON.stringify(filters))

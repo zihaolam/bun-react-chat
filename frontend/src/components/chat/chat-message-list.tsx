@@ -1,12 +1,12 @@
 import type { models } from '@backend/db'
-import { useChatContext } from '@frontend/contexts/chat-context'
+import { useParams } from '@tanstack/react-router'
 import { useConversationMessage } from '@frontend/queries/message'
 import React from 'react'
 import { useSession } from '@frontend/queries/user'
 
 interface ChatMessageProps {
     message: models.Message
-    userId: number
+    userId: number | undefined
 }
 
 const ChatMessage = ({ message, userId }: ChatMessageProps) => {
@@ -23,10 +23,8 @@ const ChatMessage = ({ message, userId }: ChatMessageProps) => {
 }
 
 export const ChatMessageList = () => {
-    const { receiver } = useChatContext()
-    const { data: messagePages, isFetching, fetchNextPage } = useConversationMessage(receiver?.id)
-
-    console.info({ receiver, messagePages })
+    const { receiverId } = useParams({ from: '/chat/$receiverId' })
+    const { data: messagePages, isFetching, fetchNextPage } = useConversationMessage(Number(receiverId))
     const { data: session } = useSession()
     const [needScrollToBottom, setNeedScrollToBottom] = React.useState(true)
     const messages = React.useMemo(() => {
@@ -64,7 +62,7 @@ export const ChatMessageList = () => {
             }}
         >
             {messages.length ? (
-                messages.map(msg => <ChatMessage userId={session.id} key={msg.id} message={msg} />)
+                messages.map(msg => <ChatMessage userId={session?.id} key={msg.id} message={msg} />)
             ) : (
                 <div className="flex items-center justify-center py-4 text-black/40 text-sm">No messages yet</div>
             )}

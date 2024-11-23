@@ -1,11 +1,11 @@
-import { useChatContext } from '@frontend/contexts/chat-context'
 import { Button, Form, Input, TextField } from 'react-aria-components'
 import { Controller } from 'react-hook-form'
 import { useSendMessage } from '@frontend/queries/message'
+import { useParams } from '@tanstack/react-router'
 
 export const ChatInput = () => {
-    const { receiver } = useChatContext()
     const { onSubmit, form, mutation } = useSendMessage()
+    const { receiverId } = useParams({ from: '/chat/$receiverId' })
     return (
         <Form onSubmit={onSubmit} className="flex p-2 gap-x-1">
             <Controller
@@ -34,7 +34,7 @@ export const ChatInput = () => {
                     </TextField>
                 )}
             />
-            <input {...form.register('to_id', { value: receiver?.id })} className="hidden" />
+            <input {...form.register('to_id', { value: Number(receiverId) })} className="hidden" />
             <Button
                 isDisabled={mutation.isPending}
                 type="submit"

@@ -16,13 +16,10 @@ export const useWebsocket = (url: string, callbacks?: Callbacks) => {
             socket.current.close()
         }
         const newSocket = new WebSocket(url)
-        console.info(newSocket)
         newSocket.onopen = function (this) {
-            console.log('Connected')
             onOpen?.(this)
         }
         newSocket.onclose = function (this) {
-            console.log('Disconnected')
             onClose?.(this)
         }
         newSocket.onmessage = msg => {

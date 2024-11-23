@@ -20,7 +20,7 @@ export const useMyConversations = () => {
     return useSuspenseInfiniteQuery({
         queryKey: getConversationQueryKey(),
         queryFn: async ({ pageParam }) => {
-            const response = await fetcher('GET', `api/conversation/me`, {
+            const response = await fetcher('GET', `/api/conversation/me`, {
                 filters: {
                     cursor: pageParam,
                     limit: 20,
@@ -41,7 +41,7 @@ export const useConversationMessage = (receiverId: number | undefined) => {
         // quick hack, we can use 0 as a fallback since account_ids start from 1
         queryKey: React.useMemo(() => getConversationMessageQueryKey(receiverId ?? 0), [receiverId]),
         queryFn: async ({ pageParam }) => {
-            const response = await fetcher('GET', `api/conversation/message`, {
+            const response = await fetcher('GET', `/api/conversation/message`, {
                 filters: {
                     cursor: pageParam,
                     limit: 20,
@@ -109,7 +109,7 @@ export const useSendMessage = () => {
 
     const mutation = useMutation({
         mutationFn: async (data: MessageValidators.InsertMessageSchema) => {
-            const response = await fetcher('POST', `api/message`, { body: data })
+            const response = await fetcher('POST', `/api/message`, { body: data })
             return response.json() as Promise<models.Message>
         },
         onSuccess: msg => {

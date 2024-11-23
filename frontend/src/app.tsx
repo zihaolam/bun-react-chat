@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import { Chat } from './components/chat'
 import { ChatContextProvider } from './contexts/chat-context'
+import { UIContextProvider } from './contexts/ui'
 
 export const App = () => {
     const { data, isLoading } = useSession()
@@ -24,9 +25,11 @@ export const AppWithProviders = () => {
     const [queryClient] = React.useState(() => new QueryClient())
     return (
         <QueryClientProvider client={queryClient}>
-            <ChatContextProvider>
-                <App />
-            </ChatContextProvider>
+            <UIContextProvider>
+                <ChatContextProvider>
+                    <App />
+                </ChatContextProvider>
+            </UIContextProvider>
         </QueryClientProvider>
     )
 }

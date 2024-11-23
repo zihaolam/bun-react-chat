@@ -9,6 +9,7 @@ const createClientEnv = (): ClientEnv => {
         // we can null assert here because validateEnv has already checked for existence of env vars
         VITE_BACKEND_PORT: Number(import.meta.env.VITE_BACKEND_PORT!),
         VITE_BACKEND_HOST: import.meta.env.VITE_BACKEND_HOST!,
+        VITE_FRONTEND_PORT: Number(import.meta.env.VITE_FRONTEND_PORT!),
     }
 }
 

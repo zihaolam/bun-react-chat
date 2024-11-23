@@ -1,6 +1,6 @@
 import { authMiddleware } from '@backend/middleware/auth'
 import { handleGetConversationMessages, handleGetConversations, handleInsertMessage } from './message'
-import { handleGetSession, handleGetUsers, handleLogin, handleLogout } from './user'
+import { handleGetSession, handleGetUser, handleGetUsers, handleLogin, handleLogout } from './user'
 
 export type HTTP_METHODS = 'GET' | 'POST' | 'PUT' | 'DELETE'
 export type SUPPORTED_HTTP_METHODS = 'GET' | 'POST' // Add more methods as needed
@@ -8,27 +8,30 @@ export type SUPPORTED_HTTP_METHODS = 'GET' | 'POST' // Add more methods as neede
 // TODO: setup typesafe validators and response types
 export const ROUTES = {
     GET: {
-        'api/conversation/me': {
+        '/api/conversation/me': {
             handler: authMiddleware(handleGetConversations),
         },
-        'api/conversation/message': {
+        '/api/conversation/message': {
             handler: authMiddleware(handleGetConversationMessages),
         },
-        'api/session': {
+        '/api/session': {
             handler: authMiddleware(handleGetSession),
         },
-        'api/user': {
+        '/api/user': {
             handler: handleGetUsers,
+        },
+        '/api/user/:userId': {
+            handler: handleGetUser,
         },
     },
     POST: {
-        'api/login': {
+        '/api/login': {
             handler: handleLogin,
         },
-        'api/logout': {
+        '/api/logout': {
             handler: handleLogout,
         },
-        'api/message': {
+        '/api/message': {
             handler: authMiddleware(handleInsertMessage),
         },
     },

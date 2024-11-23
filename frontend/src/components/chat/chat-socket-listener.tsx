@@ -1,12 +1,11 @@
-import { Conversation } from '@frontend/components/conversation'
-import { ChatWindow } from './chat-window'
+import { useSession } from '@frontend/queries/user'
+
 import { useWebsocket } from '@frontend/hooks/use-websocket'
 import { clientEnv } from '@shared/env/client'
 import { WebsocketValidators } from '@shared/validators'
-import { useSession } from '@frontend/queries/user'
 import { useOptimisticUpdateConversationMessage, useRefetchMyConversations } from '@frontend/queries/message'
 
-export const Chat = () => {
+export const ChatSocketListener = () => {
     const { data: session } = useSession()
     const updateConversationMessage = useOptimisticUpdateConversationMessage()
     const refetchMyConversations = useRefetchMyConversations()
@@ -18,7 +17,11 @@ export const Chat = () => {
                 if (!validated.success) {
                     return
                 }
+                // refetch conversations when new message comes
+                // TODO: optimise to use optimistic updates instead of full refetch
                 refetchMyConversations()
+
+                // optimistically update message when receive websocket message
                 updateConversationMessage(validated.data.message, session?.id ?? 0)
             },
             onOpen: ws => {
@@ -34,16 +37,6 @@ export const Chat = () => {
             },
         }
     )
-    return (
-        <main className="w-screen h-[100dvh] max-h-[100dvh] overflow-hidden max-w-[100vw] flex">
-            <SocketConnection />
-            <Conversation />
-            <ChatWindow />
-        </main>
-    )
+
+    return <SocketConnection />
 }
-export { ChatSocketListener } from './chat-socket-listener'
-export { ChatWindow } from './chat-window'
-export { ChatInput } from './chat-input'
-export { ChatTitleBar } from './chat-title-bar'
-export { ChatMessageList } from './chat-message-list'

@@ -19,9 +19,7 @@ export const handleRoutes = (req: Request, server: Server) => {
     const url = new URL(req.url)
     // check if it is a ws connection
 
-    const cleanedpathname = stripSlashes(url.pathname)
-
-    if (cleanedpathname === 'api/ws' && isAuthenticated(req)) {
+    if (url.pathname === '/api/ws' && isAuthenticated(req)) {
         console.info('upgrading ws connection')
         server.upgrade(req)
         return
@@ -33,7 +31,7 @@ export const handleRoutes = (req: Request, server: Server) => {
         return new Response('Method Not Allowed', { status: 405 })
     }
 
-    const handler = handlers[cleanedpathname as keyof typeof handlers]
+    const handler = handlers[url.pathname as keyof typeof handlers]
     if (!handler) {
         logRouteDetails(req.method, url.pathname, 404)
         return new Response('Not Found', { status: 404 })

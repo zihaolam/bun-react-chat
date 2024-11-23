@@ -19,7 +19,7 @@ export const useSession = () => {
     return useQuery({
         queryKey: getSessionQueryKey(),
         queryFn: async () => {
-            const response = await fetcher('GET', 'api/session')
+            const response = await fetcher('GET', '/api/session')
             if (!response.ok) {
                 return null
             }
@@ -33,7 +33,7 @@ export const useLogin = (props?: { onSuccess?: (data: models.Account) => unknown
     const { onSuccess } = props ?? {}
     return useMutation({
         mutationFn: async (data: UserValidators.CreateUserSchema) => {
-            const response = await fetcher('POST', 'api/login', {
+            const response = await fetcher('POST', '/api/login', {
                 body: data,
             })
 
@@ -47,7 +47,7 @@ export const useLogout = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: async () => {
-            const response = await fetcher('POST', 'api/logout')
+            const response = await fetcher('POST', '/api/logout')
             return response.json()
         },
         onSuccess: () => {
@@ -62,7 +62,7 @@ export const useUsers = () => {
     return useSuspenseQuery({
         queryKey: getUsersQueryKey(),
         queryFn: async () => {
-            const response = await fetcher('GET', 'api/user')
+            const response = await fetcher('GET', '/api/user')
             return response.json() as Promise<models.Account[]>
         },
     })

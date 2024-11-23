@@ -2,19 +2,16 @@ import { useMyConversations } from '@frontend/queries/message'
 import React from 'react'
 import { useSession } from '@frontend/queries/user'
 import { models } from '@backend/db'
-import { Button } from 'react-aria-components'
-import { useChatContext } from '@frontend/contexts/chat-context'
+import { Link } from '@tanstack/react-router'
 
 interface ConversationItemProps {
     conversation: models.Conversation
-    session: models.Account
+    session: models.Account | null | undefined
 }
 const ConversationItem = ({ conversation, session }: ConversationItemProps) => {
-    const { setReceiver } = useChatContext()
-
     // quick hack to build receiver object
     const receiver = React.useMemo(() => {
-        return conversation.from_id === session.id
+        return conversation.from_id === session?.id
             ? {
                   id: conversation.to_id,
                   username: conversation.to_username,
@@ -39,15 +36,19 @@ const ConversationItem = ({ conversation, session }: ConversationItemProps) => {
     }
 
     return (
-        <Button className="px-2 py-1 last:border-b block text-left w-full" onPress={() => setReceiver(receiver)}>
+        <Link
+            className="px-2 py-1 last:border-b block text-left w-full"
+            to="/chat/$receiverId"
+            params={{ receiverId: receiver.id.toString() }}
+        >
             <div className="flex justify-between">
                 <span className="font-semibold text-sm ">👤 {receiver.username}</span>
                 <span className="text-[0.65rem] font-light text-black/50">{renderDate()}</span>
             </div>
             <div className="text-xs text-black/50">
-                {conversation.from_id === session.id ? 'me:' : ''} {conversation.content}
+                {conversation.from_id === session?.id ? 'me:' : ''} {conversation.content}
             </div>
-        </Button>
+        </Link>
     )
 }
 
